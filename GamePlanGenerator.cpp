@@ -36,9 +36,29 @@ List<GamePlanGenerator::TeamPairIndices>^ GamePlanGenerator::RoundRobinTeamPairs
 	return teamPairs;
 }
 
+array<System::String^>^ GamePlanGenerator::ShuffleTeams(void)
+{
+	array<System::String^>^ shuffledTeams = gcnew array<System::String^>(teamsList->Length);
+	teamsList->CopyTo(shuffledTeams, 0);
+
+	System::Random^ random = gcnew System::Random();
+
+	for (int i = 0; i < shuffledTeams->Length; i++)
+	{
+		int index = random->Next(i, shuffledTeams->Length);
+		System::String^ temp = shuffledTeams[i];
+		shuffledTeams[i] = shuffledTeams[index];
+		shuffledTeams[index] = temp;
+	}
+
+	return shuffledTeams;
+}
+
 void GamePlanGenerator::GenerateMatchDaysRound1(void)
 {
 	List<GamePlanGenerator::TeamPairIndices>^ teamPairsIndices = RoundRobinTeamPairs();
+
+	array<System::String^>^ shuffledTeams = ShuffleTeams();
 
 	int teamPairIndex = 0;
 
@@ -51,8 +71,8 @@ void GamePlanGenerator::GenerateMatchDaysRound1(void)
 			GamePlanGenerator::TeamPairIndices teamPair = teamPairsIndices[teamPairIndex++];
 
 			Match^ match = gcnew Match();
-			match->homeTeamName = this->teamsList[teamPair.team1Index];
-			match->visitingTeamName = this->teamsList[teamPair.team2Index];
+			match->homeTeamName = shuffledTeams[teamPair.team1Index];
+			match->visitingTeamName = shuffledTeams[teamPair.team2Index];
 
 			matchDay->matches->Add(match);
 		}

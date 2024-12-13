@@ -23,5 +23,6 @@ namespace TournamentPlanner {
 		System::Collections::Generic::List<TeamPairIndices>^ RoundRobinTeamPairs(void);
 		void GenerateMatchDaysRound1(void);
 		void GenerateMatchDaysRound2(void);
+		array<System::String^>^ ShuffleTeams(void);
 	};
 }
